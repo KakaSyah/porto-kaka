@@ -22,7 +22,7 @@ FALLBACK_PROFILE = {
     'nama_lengkap': 'Nama Lengkap Anda',
     'nama_panggilan': 'Nama Panggilan',
     'tempat_lahir': '',
-    'email': 'kristaandhika1@gmail.com',
+    'email': 'kakarooy90@gmail.com',
     'telepon': '08xxxxxxxxxx',
     'universitas': 'Nama Universitas',
     'fakultas': 'Nama Fakultas',
