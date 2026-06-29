@@ -147,8 +147,9 @@ class Database:
             """,
             """
             INSERT INTO users (username, password_hash, role)
-            VALUES ('admin', 'admin', 'admin')
+            VALUES ('admin', 'admin123', 'admin')
             ON DUPLICATE KEY UPDATE
+                password_hash = VALUES(password_hash),
                 role = VALUES(role)
             """
         ]
