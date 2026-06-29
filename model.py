@@ -26,7 +26,9 @@ def _get_connection():
         database=cfg['database'],
         ssl=ssl_opts,
         cursorclass=pymysql.cursors.DictCursor,
-        connect_timeout=10,
+        connect_timeout=8,
+        read_timeout=15,
+        write_timeout=15,
         autocommit=False,
     )
     return conn
@@ -83,6 +85,24 @@ class Database:
 
             elapsed = time.time() - start_time
             logger.debug("Query executed in %.3fs: %s...", elapsed, query.strip()[:50])
+            return result
+        except Exception:
+            conn.rollback()
+            raise
+        finally:
+            conn.close()
+
+    def execute_with_connection(self, fn):
+        """
+        Jalankan beberapa query dalam 1 koneksi yang sama.
+        fn menerima (conn, cursor) dan mengembalikan hasil apapun.
+        Koneksi dibuka sekali dan ditutup setelah fn selesai.
+        """
+        conn = _get_connection()
+        try:
+            with conn.cursor() as cursor:
+                result = fn(conn, cursor)
+            conn.commit()
             return result
         except Exception:
             conn.rollback()
@@ -165,7 +185,6 @@ class Database:
             INSERT INTO users (username, password_hash, role)
             VALUES ('admin', 'admin123', 'admin')
             ON DUPLICATE KEY UPDATE
-                password_hash = VALUES(password_hash),
                 role = VALUES(role)
             """
         ]
