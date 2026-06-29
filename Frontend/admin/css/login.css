@@ -1,0 +1,454 @@
+/* =========================================
+   OCEAN LUXURY — LOGIN EXPERIENCE
+   Overrides base.css for the login (.auth-page) view only.
+   Tidak mengubah ID/struktur yang dipakai login.js.
+   ========================================= */
+:root {
+  --ol-deep: #021B3A;
+  --ol-navy: #0B3D91;
+  --ol-blue: #0077B6;
+  --ol-azure: #0096C7;
+  --ol-cyan: #00B4D8;
+  --ol-aqua: #48CAE4;
+  --ol-light: #90E0EF;
+  --ol-foam: #CAF0F8;
+  --ol-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ol-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+body.auth-page {
+  display: block;
+  grid-template-columns: none;
+  min-height: 100vh;
+  margin: 0;
+  background: #03101f;
+  font-family: "Outfit", "Inter", system-ui, sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ---------- Animated ocean background ---------- */
+.ocean-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(12,77,140,0.55) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 100%, rgba(15,184,143,0.12) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(6,31,60,0.8) 0%, transparent 70%),
+    linear-gradient(165deg, #03101f 0%, #061f3c 45%, #0c4d8c 100%);
+}
+
+.ocean-bg .aurora {
+  position: absolute;
+  inset: -30%;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(47,217,242,0.18), transparent 40%),
+    radial-gradient(circle at 70% 60%, rgba(15,184,143,0.12), transparent 45%);
+  filter: blur(50px);
+  animation: auroraShift 16s ease-in-out infinite alternate;
+}
+
+@keyframes auroraShift {
+  0%   { transform: translate(0,0) scale(1); }
+  50%  { transform: translate(4%, -3%) scale(1.1); }
+  100% { transform: translate(-3%, 4%) scale(1.02); }
+}
+
+.ocean-bg .bubble {
+  position: absolute;
+  bottom: -10%;
+  left: var(--x, 50%);
+  width: var(--s, 14px);
+  height: var(--s, 14px);
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.55), rgba(0,180,216,0.05) 70%);
+  border: 1px solid rgba(255,255,255,0.25);
+  animation: olBubbleRise var(--d, 11s) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes olBubbleRise {
+  0%   { transform: translateY(0) translateX(0); opacity: 0; }
+  10%  { opacity: 0.65; }
+  50%  { transform: translateY(-55vh) translateX(12px); }
+  90%  { opacity: 0.45; }
+  100% { transform: translateY(-108vh) translateX(-12px); opacity: 0; }
+}
+
+/* ---------- Shell / split layout ---------- */
+.auth-shell {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  align-items: stretch;
+}
+
+/* ---------- Left illustration panel ---------- */
+.auth-illustration {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  overflow: hidden;
+  animation: olFadeIn 0.9s var(--ol-ease) both;
+}
+
+.illustration-glow {
+  position: absolute;
+  width: 460px;
+  height: 460px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,180,216,0.28), transparent 70%);
+  filter: blur(10px);
+  animation: olPulseGlow 6s ease-in-out infinite;
+}
+
+@keyframes olPulseGlow {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50%      { opacity: 1; transform: scale(1.06); }
+}
+
+.ocean-art { width: min(380px, 80%); position: relative; z-index: 1; }
+
+.art-float { animation: olFloatY 5s ease-in-out infinite; transform-origin: center; }
+.art-float-slow { animation: olFloatY 7s ease-in-out infinite; animation-delay: 0.5s; transform-origin: center; }
+@keyframes olFloatY { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+.art-pulse { animation: olPulseGlow 5s ease-in-out infinite; }
+
+.art-wave { animation: olWaveShift 7s ease-in-out infinite; }
+.art-wave-2 { animation-duration: 9s; animation-delay: 0.5s; }
+@keyframes olWaveShift {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(14px); }
+}
+
+.illustration-tagline {
+  margin-top: 2rem;
+  text-align: center;
+  color: var(--ol-foam);
+  font-size: 1.15rem;
+  line-height: 1.6;
+  font-weight: 500;
+  position: relative;
+  z-index: 1;
+  opacity: 0.9;
+}
+
+/* ---------- Right card panel ---------- */
+.auth-card-wrap {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.auth-card {
+  width: min(420px, 100%);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 28px;
+  padding: 2.75rem 2.4rem;
+  display: grid;
+  gap: 0;
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  box-shadow:
+    0 30px 60px -15px rgba(2, 27, 58, 0.55),
+    inset 0 1px 0 rgba(255,255,255,0.25),
+    inset 0 0 40px rgba(0,180,216,0.06);
+  position: relative;
+  animation: olCardEnter 0.8s var(--ol-bounce) both;
+}
+
+.auth-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 28px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(0,180,216,0.6), rgba(255,255,255,0.05) 40%, rgba(72,202,228,0.4));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+@keyframes olCardEnter {
+  from { opacity: 0; transform: translateY(36px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.auth-card.shake { animation: olCardEnter 0.01s, olShake 0.45s var(--ol-ease); }
+@keyframes olShake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-8px); }
+  40%      { transform: translateX(7px); }
+  60%      { transform: translateX(-5px); }
+  80%      { transform: translateX(4px); }
+}
+
+.auth-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: fit-content;
+  background: rgba(0, 180, 216, 0.15);
+  border: 1px solid rgba(0, 180, 216, 0.35);
+  color: var(--ol-foam);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 0.4rem 0.9rem;
+  border-radius: 50px;
+  margin-bottom: 1.4rem;
+}
+
+.auth-card h1 {
+  color: white;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin: 0 0 0.4rem;
+}
+
+.auth-sub {
+  color: rgba(255,255,255,0.65);
+  font-size: 0.95rem;
+  margin: 0 0 2rem;
+}
+
+/* ---------- Floating-label inputs ---------- */
+.input-group {
+  position: relative;
+  margin-bottom: 1.4rem;
+}
+
+.input-group input {
+  width: 100%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 14px;
+  padding: 1.15rem 1rem 1.15rem 2.9rem;
+  font-size: 1rem;
+  font-family: inherit;
+  color: white;
+  outline: none;
+  transition: all 0.3s var(--ol-ease);
+}
+
+.input-group input::placeholder { color: transparent; }
+
+.input-group .input-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255,255,255,0.45);
+  font-size: 0.95rem;
+  transition: color 0.3s var(--ol-ease);
+  z-index: 2;
+}
+
+.input-group label {
+  position: absolute;
+  left: 2.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255,255,255,0.55);
+  font-size: 1rem;
+  pointer-events: none;
+  transition: all 0.25s var(--ol-ease);
+  background: transparent;
+  display: block;
+}
+
+.input-group input:focus,
+.input-group input:not(:placeholder-shown) {
+  border-color: #2fd9f2;
+  background: rgba(47,217,242,0.06);
+  box-shadow: 0 0 0 4px rgba(47,217,242,0.15);
+}
+
+.input-group input:focus ~ .input-icon,
+.input-group input:not(:placeholder-shown) ~ .input-icon {
+  color: #2fd9f2;
+}
+
+.input-group input:focus ~ label,
+.input-group input:not(:placeholder-shown) ~ label {
+  top: 0;
+  left: 0.85rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #2fd9f2;
+  background: #061f3c;
+  padding: 0 0.4rem;
+  border-radius: 6px;
+  transform: translateY(-50%);
+}
+
+.toggle-pass {
+  position: absolute;
+  right: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+  padding: 0.3rem;
+  transition: color 0.25s var(--ol-ease);
+  z-index: 2;
+}
+.toggle-pass:hover { color: var(--ol-cyan); }
+
+/* ---------- Submit button ---------- */
+.auth-submit {
+  position: relative;
+  width: 100%;
+  margin-top: 0.4rem;
+  padding: 1.05rem 1.5rem;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #0f7a96 0%, #2fd9f2 100%);
+  background-size: 200% 200%;
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  overflow: hidden;
+  box-shadow: 0 10px 26px rgba(47, 217, 242, 0.3);
+  transition: all 0.35s var(--ol-ease), background-position 0.6s var(--ol-ease);
+}
+
+.auth-submit:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 34px rgba(47, 217, 242, 0.45);
+  background-position: 100% 0;
+}
+
+.auth-submit:active { transform: translateY(-1px) scale(0.98); }
+
+.auth-submit i { transition: transform 0.3s var(--ol-ease); }
+.auth-submit:hover i { transform: translateX(4px); }
+
+.auth-submit::after {
+  content: "";
+  position: absolute;
+  top: 0; left: -75%;
+  width: 50%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.45), transparent);
+  transform: skewX(-20deg);
+  animation: olShine 3.2s ease-in-out infinite;
+}
+@keyframes olShine {
+  0%   { left: -75%; }
+  50%  { left: 130%; }
+  100% { left: 130%; }
+}
+
+.auth-submit.loading {
+  pointer-events: none;
+  opacity: 0.85;
+}
+.auth-submit.loading .auth-submit-label::after {
+  content: "";
+  display: inline-block;
+  width: 14px; height: 14px;
+  margin-left: 0.6rem;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: olSpin 0.7s linear infinite;
+  vertical-align: middle;
+}
+@keyframes olSpin { to { transform: rotate(360deg); } }
+
+/* ---------- Message ---------- */
+.message {
+  margin: 1.1rem 0 0;
+  min-height: 1.2rem;
+  font-size: 0.9rem;
+  text-align: center;
+  color: rgba(255,255,255,0.65);
+  transition: color 0.3s var(--ol-ease);
+}
+.message.is-error { color: #fca5a5; }
+.message.is-success { color: var(--ol-foam); }
+
+@keyframes olFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 980px) {
+  .auth-shell { grid-template-columns: 1fr; }
+  .auth-illustration { display: none; }
+  .auth-card-wrap { padding: 1.5rem; min-height: 100vh; }
+}
+
+@media (max-width: 480px) {
+  .auth-card { padding: 2.1rem 1.6rem; border-radius: 22px; }
+  .auth-card h1 { font-size: 1.6rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ocean-bg .bubble, .ocean-bg .aurora, .art-float, .art-float-slow,
+  .art-pulse, .art-wave, .auth-submit::after { animation: none; }
+  *, *::before, *::after { transition-duration: 0.01ms !important; }
+}
+
+/* ── Ocean Luxury Login Overrides ── */
+body.auth-page {
+    grid-template-columns: 1fr;
+    background: var(--ocean-900);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-card {
+    background: rgba(6,31,60,0.75) !important;
+    border: 1px solid rgba(47,217,242,0.18) !important;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow: 0 32px 80px rgba(3,16,31,0.8), 0 0 48px rgba(47,217,242,0.12) !important;
+    border-radius: 24px !important;
+}
+
+.auth-submit {
+    background: linear-gradient(135deg, #0f7a96 0%, #2fd9f2 100%) !important;
+    box-shadow: 0 4px 20px rgba(47,217,242,0.35) !important;
+    border-radius: 12px !important;
+}
+
+.auth-submit:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 32px rgba(47,217,242,0.5) !important;
+}
+
+.input-group input {
+    background: rgba(6,31,60,0.7) !important;
+    border-color: rgba(47,217,242,0.18) !important;
+    color: var(--text) !important;
+    border-radius: 10px !important;
+}
+
+.input-group input:focus {
+    border-color: rgba(47,217,242,0.6) !important;
+    box-shadow: 0 0 0 3px rgba(47,217,242,0.15) !important;
+}

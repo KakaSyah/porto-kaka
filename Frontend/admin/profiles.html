@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil — Ocean Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/base.css">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="sidebar-logo-icon">🌊</div>
+            <div class="sidebar-logo-text"><strong>Portfolio</strong><small>Admin Panel</small></div>
+        </div>
+        <div class="sidebar-profile">
+            <div class="sidebar-avatar">A</div>
+            <div class="sidebar-profile-info">
+                <div class="sidebar-profile-name">Administrator</div>
+                <div class="sidebar-profile-role">Super Admin</div>
+            </div>
+            <div class="sidebar-status"></div>
+        </div>
+        <nav>
+            <span class="nav-section-label">Navigation</span>
+            <a href="dashboard.html"><span class="nav-icon"><i class="fas fa-gauge-high"></i></span>Dashboard</a>
+            <a href="profiles.html" class="active"><span class="nav-icon"><i class="fas fa-user-circle"></i></span>Profil</a>
+            <a href="akun.html"><span class="nav-icon"><i class="fas fa-shield-halved"></i></span>Akun</a>
+            <div class="sidebar-divider"></div>
+            <span class="nav-section-label">Content</span>
+            <a href="experience.html"><span class="nav-icon"><i class="fas fa-briefcase"></i></span>Experience</a>
+            <a href="projects.html"><span class="nav-icon"><i class="fas fa-folder-open"></i></span>Projects</a>
+            <a href="skills.html"><span class="nav-icon"><i class="fas fa-code"></i></span>Skills</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="../../index.html"><i class="fas fa-arrow-up-right-from-square" style="color:var(--cyan-400)"></i>Lihat Website</a>
+        </div>
+    </aside>
+
+    <main class="content">
+        <nav class="top-nav">
+            <div class="page-title-wrap" style="display:flex;align-items:center;gap:14px">
+                <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+                <div>
+                    <h2>Profil</h2>
+                    <div class="page-breadcrumb">Admin / <span>Edit Profil</span></div>
+                </div>
+            </div>
+            <div class="top-nav-right">
+                <button id="logoutBtn"><i class="fas fa-right-from-bracket"></i> Logout</button>
+            </div>
+        </nav>
+
+        <form id="profileForm" class="panel form-grid">
+            <input type="hidden" id="foto_url">
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                <label>Nama Lengkap <input id="nama_lengkap" required placeholder="Nama lengkap Anda"></label>
+                <label>Nama Panggilan <input id="nama_panggilan" placeholder="Nama panggilan"></label>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr;gap:16px">
+                <label>Tempat Lahir <input id="tempat_lahir" placeholder="Kota kelahiran"></label>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                <label>Email <input id="email" type="email" required placeholder="email@domain.com"></label>
+                <label>Telepon <input id="telepon" placeholder="+62 ..."></label>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                <label>Universitas <input id="universitas" placeholder="Nama universitas"></label>
+                <label>Fakultas <input id="fakultas" placeholder="Nama fakultas"></label>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                <label>Program Studi <input id="prodi" placeholder="Program studi"></label>
+                <label>Semester <input id="semester" placeholder="Semester ke-..."></label>
+            </div>
+
+            <label>Alamat <textarea id="alamat" placeholder="Alamat lengkap Anda..."></textarea></label>
+
+            <div class="panel" style="background:rgba(7,20,40,0.5);border-style:dashed;margin-bottom:0">
+                <h4 style="font-size:13px;font-weight:700;color:var(--text-muted);margin-bottom:12px;display:flex;align-items:center;gap:8px">
+                    <i class="fas fa-image" style="color:var(--cyan-400)"></i> Foto Profil
+                </h4>
+                <label style="margin-bottom:10px">
+                    <input id="photoFile" type="file" accept="image/*">
+                </label>
+                <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
+                    <button type="button" id="uploadPhotoBtn">
+                        <i class="fas fa-cloud-arrow-up"></i> Upload Foto
+                    </button>
+                    <small id="photoUploadStatus">Pilih foto lalu klik upload.</small>
+                </div>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:12px;padding-top:8px">
+                <button type="submit" style="flex:1;max-width:200px">
+                    <i class="fas fa-floppy-disk"></i> Simpan Profil
+                </button>
+                <p id="profileMessage" class="message" style="flex:1"></p>
+            </div>
+        </form>
+    </main>
+
+    <script src="js/base.js"></script>
+    <script src="js/profiles.js"></script>
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            sidebar.classList.toggle('open'); overlay.classList.toggle('active');
+        });
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('open'); overlay.classList.remove('active');
+        });
+    </script>
+</body>
+</html>

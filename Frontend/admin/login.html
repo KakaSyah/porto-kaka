@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body class="auth-page">
+
+    <!-- Ocean background layers (visual only) -->
+    <div class="ocean-bg" aria-hidden="true">
+        <div class="aurora"></div>
+        <span class="bubble" style="--x:6%;  --s:14px; --d:11s; --delay:0s"></span>
+        <span class="bubble" style="--x:16%; --s:9px;  --d:9s;  --delay:1.2s"></span>
+        <span class="bubble" style="--x:28%; --s:20px; --d:13s; --delay:2.4s"></span>
+        <span class="bubble" style="--x:40%; --s:12px; --d:10s; --delay:0.6s"></span>
+        <span class="bubble" style="--x:62%; --s:16px; --d:12s; --delay:3s"></span>
+        <span class="bubble" style="--x:74%; --s:10px; --d:9.5s; --delay:1.8s"></span>
+        <span class="bubble" style="--x:85%; --s:22px; --d:14s; --delay:0.3s"></span>
+        <span class="bubble" style="--x:93%; --s:13px; --d:10.5s; --delay:2.1s"></span>
+    </div>
+
+    <div class="auth-shell">
+        <!-- Left illustration panel -->
+        <section class="auth-illustration" aria-hidden="true">
+            <div class="illustration-glow"></div>
+            <svg class="ocean-art" viewBox="0 0 400 460" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="seaGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#00B4D8" stop-opacity="0.55"/>
+                        <stop offset="100%" stop-color="#0077B6" stop-opacity="0.05"/>
+                    </linearGradient>
+                </defs>
+                <circle cx="200" cy="150" r="120" fill="url(#seaGrad)" class="art-pulse"/>
+                <g class="art-float">
+                    <path d="M200 90c-26 0-46 22-46 50 0 33 28 55 46 78 18-23 46-45 46-78 0-28-20-50-46-50z" fill="none" stroke="#CAF0F8" stroke-width="2" opacity="0.55"/>
+                    <circle cx="200" cy="140" r="10" fill="#CAF0F8" opacity="0.7"/>
+                </g>
+                <g class="art-float-slow">
+                    <ellipse cx="120" cy="260" rx="34" ry="20" fill="#90E0EF" opacity="0.5"/>
+                    <path d="M100 270 q10 20 0 30 M120 274 q8 22 0 32 M140 270 q10 20 0 30" stroke="#90E0EF" stroke-width="2" fill="none" opacity="0.5"/>
+                </g>
+                <g class="art-float">
+                    <ellipse cx="290" cy="230" rx="26" ry="15" fill="#48CAE4" opacity="0.45"/>
+                    <path d="M276 240 q8 16 0 24 M290 243 q6 18 0 26 M304 240 q8 16 0 24" stroke="#48CAE4" stroke-width="2" fill="none" opacity="0.45"/>
+                </g>
+                <path class="art-wave" d="M0 380 Q50 360 100 380 T200 380 T300 380 T400 380 V460 H0 Z" fill="#0096C7" opacity="0.35"/>
+                <path class="art-wave art-wave-2" d="M0 400 Q50 385 100 400 T200 400 T300 400 T400 400 V460 H0 Z" fill="#00B4D8" opacity="0.5"/>
+            </svg>
+            <p class="illustration-tagline">Kelola portofolio Anda<br>dengan tenang, seperti laut yang dalam.</p>
+        </section>
+
+        <!-- Right glass login card -->
+        <section class="auth-card-wrap">
+            <form id="loginForm" class="auth-card">
+                <span class="auth-badge"><i class="fas fa-shield-halved"></i> Area Admin</span>
+                <h1>Selamat Datang</h1>
+                <p class="auth-sub" id="greetingText">Masuk untuk mengelola portofolio Anda</p>
+
+                <div class="input-group">
+                    <i class="fas fa-user input-icon"></i>
+                    <input id="username" type="text" autocomplete="username" required placeholder=" ">
+                    <label for="username">Username</label>
+                </div>
+
+                <div class="input-group">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input id="password" type="password" autocomplete="current-password" required placeholder=" ">
+                    <label for="password">Password</label>
+                    <button type="button" class="toggle-pass" id="togglePass" aria-label="Tampilkan password" tabindex="-1">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+
+                <button type="submit" class="auth-submit" id="loginSubmitBtn">
+                    <span class="auth-submit-label">Masuk</span>
+                    <i class="fas fa-arrow-right-long"></i>
+                </button>
+
+                <!-- Registration disabled: link removed -->
+                <p id="message" class="message"></p>
+            </form>
+        </section>
+    </div>
+
+    <script src="js/base.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/login-animations.js"></script>
+</body>
+</html>

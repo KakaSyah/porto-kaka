@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akun — Ocean Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/base.css">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="sidebar-logo-icon">🌊</div>
+            <div class="sidebar-logo-text"><strong>Portfolio</strong><small>Admin Panel</small></div>
+        </div>
+        <div class="sidebar-profile">
+            <div class="sidebar-avatar">A</div>
+            <div class="sidebar-profile-info">
+                <div class="sidebar-profile-name">Administrator</div>
+                <div class="sidebar-profile-role">Super Admin</div>
+            </div>
+            <div class="sidebar-status"></div>
+        </div>
+        <nav>
+            <span class="nav-section-label">Navigation</span>
+            <a href="dashboard.html"><span class="nav-icon"><i class="fas fa-gauge-high"></i></span>Dashboard</a>
+            <a href="profiles.html"><span class="nav-icon"><i class="fas fa-user-circle"></i></span>Profil</a>
+            <a href="akun.html" class="active"><span class="nav-icon"><i class="fas fa-shield-halved"></i></span>Akun</a>
+            <div class="sidebar-divider"></div>
+            <span class="nav-section-label">Content</span>
+            <a href="experience.html"><span class="nav-icon"><i class="fas fa-briefcase"></i></span>Experience</a>
+            <a href="projects.html"><span class="nav-icon"><i class="fas fa-folder-open"></i></span>Projects</a>
+            <a href="skills.html"><span class="nav-icon"><i class="fas fa-code"></i></span>Skills</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="../../index.html"><i class="fas fa-arrow-up-right-from-square" style="color:var(--cyan-400)"></i>Lihat Website</a>
+        </div>
+    </aside>
+
+    <main class="content">
+        <nav class="top-nav">
+            <div class="page-title-wrap" style="display:flex;align-items:center;gap:14px">
+                <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+                <div>
+                    <h2>Akun</h2>
+                    <div class="page-breadcrumb">Admin / <span>Keamanan Akun</span></div>
+                </div>
+            </div>
+            <div class="top-nav-right">
+                <button id="logoutBtn"><i class="fas fa-right-from-bracket"></i> Logout</button>
+            </div>
+        </nav>
+
+        <div style="max-width:500px">
+            <form id="passwordForm" class="panel form-grid">
+                <div style="margin-bottom:4px">
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+                        <div style="width:42px;height:42px;background:linear-gradient(135deg,rgba(244,63,94,0.15),rgba(244,63,94,0.05));border:1px solid rgba(244,63,94,0.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">
+                            🔐
+                        </div>
+                        <div>
+                            <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:700;color:var(--text)">Ganti Password Admin</h3>
+                            <p style="font-size:12px;color:var(--text-muted);margin-top:2px">Pastikan password baru cukup kuat dan aman.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <label>Password Lama
+                    <div style="position:relative">
+                        <input id="oldPassword" type="password" required placeholder="Masukkan password lama" style="padding-right:44px">
+                    </div>
+                </label>
+
+                <label>Password Baru
+                    <div style="position:relative">
+                        <input id="newPassword" type="password" required placeholder="Masukkan password baru" style="padding-right:44px">
+                    </div>
+                </label>
+
+                <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px">
+                    <i class="fas fa-triangle-exclamation" style="color:#f59e0b;margin-top:1px;font-size:13px;flex-shrink:0"></i>
+                    <p style="font-size:12px;color:#fbbf24;line-height:1.5">Gunakan minimal 8 karakter dengan kombinasi huruf besar, angka, dan simbol untuk keamanan optimal.</p>
+                </div>
+
+                <button type="submit">
+                    <i class="fas fa-lock"></i> Perbarui Password
+                </button>
+                <p id="passwordMessage" class="message"></p>
+            </form>
+        </div>
+    </main>
+
+    <script src="js/base.js"></script>
+    <script src="js/akun.js"></script>
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            sidebar.classList.toggle('open'); overlay.classList.toggle('active');
+        });
+        overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('active'); });
+    </script>
+</body>
+</html>

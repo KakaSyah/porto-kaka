@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skills — Ocean Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/base.css">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="sidebar-logo-icon">🌊</div>
+            <div class="sidebar-logo-text"><strong>Portfolio</strong><small>Admin Panel</small></div>
+        </div>
+        <div class="sidebar-profile">
+            <div class="sidebar-avatar">A</div>
+            <div class="sidebar-profile-info">
+                <div class="sidebar-profile-name">Administrator</div>
+                <div class="sidebar-profile-role">Super Admin</div>
+            </div>
+            <div class="sidebar-status"></div>
+        </div>
+        <nav>
+            <span class="nav-section-label">Navigation</span>
+            <a href="dashboard.html"><span class="nav-icon"><i class="fas fa-gauge-high"></i></span>Dashboard</a>
+            <a href="profiles.html"><span class="nav-icon"><i class="fas fa-user-circle"></i></span>Profil</a>
+            <a href="akun.html"><span class="nav-icon"><i class="fas fa-shield-halved"></i></span>Akun</a>
+            <div class="sidebar-divider"></div>
+            <span class="nav-section-label">Content</span>
+            <a href="experience.html"><span class="nav-icon"><i class="fas fa-briefcase"></i></span>Experience</a>
+            <a href="projects.html"><span class="nav-icon"><i class="fas fa-folder-open"></i></span>Projects</a>
+            <a href="skills.html" class="active"><span class="nav-icon"><i class="fas fa-code"></i></span>Skills</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="../../index.html"><i class="fas fa-arrow-up-right-from-square" style="color:var(--cyan-400)"></i>Lihat Website</a>
+        </div>
+    </aside>
+
+    <main class="content">
+        <nav class="top-nav">
+            <div class="page-title-wrap" style="display:flex;align-items:center;gap:14px">
+                <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+                <div>
+                    <h2>Skills</h2>
+                    <div class="page-breadcrumb">Content / <span>Kelola Skills</span></div>
+                </div>
+            </div>
+            <div class="top-nav-right">
+                <button id="logoutBtn"><i class="fas fa-right-from-bracket"></i> Logout</button>
+            </div>
+        </nav>
+
+        <div style="display:grid;grid-template-columns:320px 1fr;gap:20px;align-items:start">
+            <form id="skillForm" class="panel form-grid" style="position:sticky;top:80px">
+                <h3 class="section-title"><i class="fas fa-plus-circle" style="color:var(--cyan-400)"></i> Tambah / Edit</h3>
+                <input type="hidden" id="itemId">
+                <label>Nama Skill <input id="nama_skill" required placeholder="Python, React, etc."></label>
+                <label>Icon Class <input id="icon_class" placeholder="fas fa-code"></label>
+                <div style="display:flex;gap:10px">
+                    <button type="submit" style="flex:1"><i class="fas fa-floppy-disk"></i> Simpan</button>
+                    <button type="button" id="resetBtn"><i class="fas fa-rotate-left"></i> Reset</button>
+                </div>
+            </form>
+
+            <div>
+                <h3 class="section-title" style="margin-bottom:16px"><i class="fas fa-list" style="color:var(--cyan-400)"></i> Daftar Skills</h3>
+                <section id="skillList" class="list"></section>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/base.js"></script>
+    <script src="js/skills.js"></script>
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            sidebar.classList.toggle('open'); overlay.classList.toggle('active');
+        });
+        overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('active'); });
+    </script>
+</body>
+</html>
