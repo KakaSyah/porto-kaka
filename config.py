@@ -27,7 +27,14 @@ class Config:
     DB_USER = os.getenv('DB_USER') or os.getenv('DB_USERNAME', '')
     DB_PASSWORD = os.getenv('DB_PASSWORD', '')
     DB_NAME = os.getenv('DB_NAME') or os.getenv('DB_DATABASE', '')
-    DB_CA_PATH = os.getenv('DB_CA_PATH') or os.getenv('CA_PATH', '')
+
+    # Resolve CA path: jika env berisi path absolut Windows yg tidak ada di server,
+    # otomatis fallback ke ca.pem di root project (berlaku di Vercel).
+    _raw_ca = os.getenv('DB_CA_PATH') or os.getenv('CA_PATH', '')
+    if _raw_ca and not os.path.exists(_raw_ca):
+        _raw_ca = ''
+    _fallback_ca = os.path.join(BASE_DIR, 'ca.pem')
+    DB_CA_PATH = _raw_ca if _raw_ca else (_fallback_ca if os.path.exists(_fallback_ca) else None)
 
     MYSQL_CONFIG = {
         'host': DB_HOST,
