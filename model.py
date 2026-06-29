@@ -1,9 +1,8 @@
 import logging
-import os
 import time
 
-import mysql.connector
-from mysql.connector import pooling
+import pymysql
+import pymysql.cursors
 
 from config import Config
 
@@ -11,58 +10,76 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
+def _get_connection():
+    """Buat koneksi baru ke TiDB/MySQL (cocok untuk serverless Vercel)."""
+    cfg = Config.MYSQL_CONFIG.copy()
+
+    ssl_opts = None
+    if cfg.get('ssl_ca'):
+        ssl_opts = {'ca': cfg['ssl_ca']}
+
+    conn = pymysql.connect(
+        host=cfg['host'],
+        port=int(cfg['port']),
+        user=cfg['user'],
+        password=cfg['password'],
+        database=cfg['database'],
+        ssl=ssl_opts,
+        cursorclass=pymysql.cursors.DictCursor,
+        connect_timeout=10,
+        autocommit=False,
+    )
+    return conn
+
+
 class Database:
-    _instance = None
-    _pool = None
+    """
+    Wrapper database tanpa connection pool — kompatibel dengan Vercel serverless.
+    Setiap pemanggilan membuka koneksi baru dan menutupnya setelah selesai.
+    """
+
+    _initialized = False
 
     def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(Database, cls).__new__(cls)
-        return cls._instance
+        # Tidak perlu singleton ketat; cukup pastikan init hanya sekali per cold start
+        instance = super().__new__(cls)
+        return instance
 
     def __init__(self):
         if Config.DB_DRIVER != 'mysql':
             raise ValueError("DB_DRIVER harus 'mysql'")
 
-        if self._pool is None:
-            missing = [
-                name for name, value in {
-                    'DB_HOST': Config.DB_HOST,
-                    'DB_USER': Config.DB_USER,
-                    'DB_PASSWORD': Config.DB_PASSWORD,
-                    'DB_NAME': Config.DB_NAME,
-                }.items()
-                if not value
-            ]
-            if missing:
-                raise ValueError(f"Konfigurasi MySQL belum lengkap: {', '.join(missing)}")
+        missing = [
+            name for name, value in {
+                'DB_HOST': Config.DB_HOST,
+                'DB_USER': Config.DB_USER,
+                'DB_PASSWORD': Config.DB_PASSWORD,
+                'DB_NAME': Config.DB_NAME,
+            }.items()
+            if not value
+        ]
+        if missing:
+            raise ValueError(f"Konfigurasi MySQL belum lengkap: {', '.join(missing)}")
 
-            self._pool = pooling.MySQLConnectionPool(
-                pool_name="portfolio_pool",
-                pool_size=5,
-                pool_reset_session=True,
-                **Config.MYSQL_CONFIG
-            )
+        if not Database._initialized:
             self._init_mysql()
+            Database._initialized = True
 
     def get_connection(self):
-        return self._pool.get_connection()
+        return _get_connection()
 
     def execute_query(self, query, params=None, fetch=False):
         """Menjalankan query untuk MySQL/TiDB."""
         start_time = time.time()
-        conn = self.get_connection()
-        cursor = conn.cursor(dictionary=True)
-        query_to_run = self._normalize_query(query)
-
+        conn = _get_connection()
         try:
-            cursor.execute(query_to_run, params or ())
-            if fetch:
-                rows = cursor.fetchall()
-                result = [dict(row) for row in rows]
-            else:
-                conn.commit()
-                result = cursor.lastrowid if cursor.lastrowid else True
+            with conn.cursor() as cursor:
+                cursor.execute(query, params or ())
+                if fetch:
+                    result = cursor.fetchall()
+                else:
+                    conn.commit()
+                    result = cursor.lastrowid if cursor.lastrowid else True
 
             elapsed = time.time() - start_time
             logger.debug("Query executed in %.3fs: %s...", elapsed, query.strip()[:50])
@@ -71,7 +88,6 @@ class Database:
             conn.rollback()
             raise
         finally:
-            cursor.close()
             conn.close()
 
     def _normalize_query(self, query):
@@ -154,60 +170,59 @@ class Database:
             """
         ]
 
-        conn = self.get_connection()
-        cursor = conn.cursor()
+        conn = _get_connection()
         try:
-            for statement in statements:
-                cursor.execute(statement)
+            with conn.cursor() as cursor:
+                for statement in statements:
+                    cursor.execute(statement)
 
-            if not Config.SEED_DEMO_DATA:
-                cursor.execute("DELETE FROM skills WHERE user_id = 1 AND nama_skill IN ('Python', 'Flask', 'MySQL')")
-                cursor.execute("DELETE FROM projects WHERE user_id = 1 AND judul = 'Website Portofolio'")
-                cursor.execute("DELETE FROM experiences WHERE user_id = 1 AND posisi = 'Mahasiswa'")
+                if not Config.SEED_DEMO_DATA:
+                    cursor.execute("DELETE FROM skills WHERE user_id = 1 AND nama_skill IN ('Python', 'Flask', 'MySQL')")
+                    cursor.execute("DELETE FROM projects WHERE user_id = 1 AND judul = 'Website Portofolio'")
+                    cursor.execute("DELETE FROM experiences WHERE user_id = 1 AND posisi = 'Mahasiswa'")
 
-            if Config.SEED_DEMO_DATA:
-                cursor.execute("""
-                    INSERT INTO profiles (
-                        user_id, nama_lengkap, nama_panggilan, email, telepon,
-                        universitas, fakultas, prodi, semester, alamat, foto_url
-                    )
-                    SELECT 1, 'Nama Lengkap Anda', 'Admin', 'admin@example.com',
-                        '08xxxxxxxxxx', 'Nama Universitas', 'Nama Fakultas',
-                        'Program Studi', '1', 'Alamat Anda', ''
-                    WHERE NOT EXISTS (SELECT 1 FROM profiles WHERE user_id = 1)
-                """)
-                cursor.execute("""
-                    INSERT INTO skills (user_id, nama_skill, icon_class)
-                    SELECT 1, 'Python', 'fab fa-python'
-                    WHERE NOT EXISTS (SELECT 1 FROM skills WHERE user_id = 1 AND nama_skill = 'Python')
-                """)
-                cursor.execute("""
-                    INSERT INTO skills (user_id, nama_skill, icon_class)
-                    SELECT 1, 'Flask', 'fas fa-server'
-                    WHERE NOT EXISTS (SELECT 1 FROM skills WHERE user_id = 1 AND nama_skill = 'Flask')
-                """)
-                cursor.execute("""
-                    INSERT INTO skills (user_id, nama_skill, icon_class)
-                    SELECT 1, 'MySQL', 'fas fa-database'
-                    WHERE NOT EXISTS (SELECT 1 FROM skills WHERE user_id = 1 AND nama_skill = 'MySQL')
-                """)
-                cursor.execute("""
-                    INSERT INTO projects (user_id, judul, deskripsi, gambar_url, link_project)
-                    SELECT 1, 'Website Portofolio',
-                        'Project portofolio yang bisa dikelola dari halaman admin.',
-                        '', ''
-                    WHERE NOT EXISTS (SELECT 1 FROM projects WHERE user_id = 1 AND judul = 'Website Portofolio')
-                """)
-                cursor.execute("""
-                    INSERT INTO experiences (user_id, posisi, perusahaan, durasi, deskripsi)
-                    SELECT 1, 'Mahasiswa', 'Nama Kampus', '2024 - Sekarang',
-                        'Contoh pengalaman awal. Silakan ubah dari halaman admin.'
-                    WHERE NOT EXISTS (SELECT 1 FROM experiences WHERE user_id = 1 AND posisi = 'Mahasiswa')
-                """)
+                if Config.SEED_DEMO_DATA:
+                    cursor.execute("""
+                        INSERT INTO profiles (
+                            user_id, nama_lengkap, nama_panggilan, email, telepon,
+                            universitas, fakultas, prodi, semester, alamat, foto_url
+                        )
+                        SELECT 1, 'Nama Lengkap Anda', 'Admin', 'admin@example.com',
+                            '08xxxxxxxxxx', 'Nama Universitas', 'Nama Fakultas',
+                            'Program Studi', '1', 'Alamat Anda', ''
+                        WHERE NOT EXISTS (SELECT 1 FROM profiles WHERE user_id = 1)
+                    """)
+                    cursor.execute("""
+                        INSERT INTO skills (user_id, nama_skill, icon_class)
+                        SELECT 1, 'Python', 'fab fa-python'
+                        WHERE NOT EXISTS (SELECT 1 FROM skills WHERE user_id = 1 AND nama_skill = 'Python')
+                    """)
+                    cursor.execute("""
+                        INSERT INTO skills (user_id, nama_skill, icon_class)
+                        SELECT 1, 'Flask', 'fas fa-server'
+                        WHERE NOT EXISTS (SELECT 1 FROM skills WHERE user_id = 1 AND nama_skill = 'Flask')
+                    """)
+                    cursor.execute("""
+                        INSERT INTO skills (user_id, nama_skill, icon_class)
+                        SELECT 1, 'MySQL', 'fas fa-database'
+                        WHERE NOT EXISTS (SELECT 1 FROM skills WHERE user_id = 1 AND nama_skill = 'MySQL')
+                    """)
+                    cursor.execute("""
+                        INSERT INTO projects (user_id, judul, deskripsi, gambar_url, link_project)
+                        SELECT 1, 'Website Portofolio',
+                            'Project portofolio yang bisa dikelola dari halaman admin.',
+                            '', ''
+                        WHERE NOT EXISTS (SELECT 1 FROM projects WHERE user_id = 1 AND judul = 'Website Portofolio')
+                    """)
+                    cursor.execute("""
+                        INSERT INTO experiences (user_id, posisi, perusahaan, durasi, deskripsi)
+                        SELECT 1, 'Mahasiswa', 'Nama Kampus', '2024 - Sekarang',
+                            'Contoh pengalaman awal. Silakan ubah dari halaman admin.'
+                        WHERE NOT EXISTS (SELECT 1 FROM experiences WHERE user_id = 1 AND posisi = 'Mahasiswa')
+                    """)
             conn.commit()
         except Exception:
             conn.rollback()
             raise
         finally:
-            cursor.close()
             conn.close()
